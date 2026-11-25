@@ -1,0 +1,1466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oleksii Fetsenets — Unity Gameplay Developer</title>
+<meta name="description" content="Unity gameplay developer portfolio: Coin Master-style spin-and-raid game, Android duel with a self-written neural network, real-time Mandelbulb renderer, and AI-native engineering workflow.">
+<meta name="theme-color" content="#0b0c0f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f4b63f'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='700' fill='%231b1204' text-anchor='middle'%3EAF%3C/text%3E%3C/svg%3E">
+<meta property="og:title" content="Oleksii Fetsenets — Unity Gameplay Developer">
+<meta property="og:description" content="Playable game builds, tested core loops, mobile delivery, and AI as part of the toolchain.">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --bg:#0b0c0f;
+    --bg-2:#0f1116;
+    --panel:#14171d;
+    --panel-2:#191d24;
+    --line:rgba(255,255,255,.085);
+    --line-strong:rgba(255,255,255,.16);
+    --text:#f4f1e9;
+    --muted:#a3a8b3;
+    --dim:#757b88;
+    --gold:#f4b63f;
+    --gold-2:#ffd98a;
+    --violet:#a08dff;
+    --green:#6ee0a5;
+    --red:#ff7568;
+    --radius:22px;
+    --max:1160px;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:var(--sans);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  a{color:inherit}
+  img,svg,video{display:block;max-width:100%}
+  button{font:inherit;color:inherit}
+  ::selection{background:var(--gold);color:#171106}
+
+  .skip{position:absolute;left:-999px;top:12px;z-index:100;background:var(--gold);color:#171106;padding:10px 16px;border-radius:10px;font-weight:700}
+  .skip:focus{left:12px}
+
+  .wrap{width:min(var(--max),calc(100% - 48px));margin-inline:auto}
+  .pdf-head{display:none}
+  .mono{font-family:var(--mono)}
+  .muted{color:var(--muted)}
+  .gold{color:var(--gold-2)}
+  .phone-frame .screen,.window-frame{position:relative}
+  .video-box{position:relative;overflow:hidden;background:#000}
+  .video-box>img{width:100%;height:100%;object-fit:cover;display:block}
+  .video-box>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .portrait-video{aspect-ratio:600/1234}
+  .tw-video{aspect-ratio:816/480;padding:0}
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,12,15,.72);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s ease,background .3s ease;
+  }
+  .nav.scrolled{border-bottom-color:var(--line);background:rgba(11,12,15,.9)}
+  .nav-inner{height:68px;display:flex;align-items:center;gap:26px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:750;letter-spacing:-.02em;text-decoration:none}
+  .brand-mark{
+    width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(145deg,var(--gold),#d98f18);color:#1b1204;
+    font-size:13px;font-weight:850;letter-spacing:-.04em;
+    box-shadow:0 6px 18px rgba(244,182,63,.22);
+  }
+  .nav-links{display:flex;gap:24px;margin-left:auto;align-items:center}
+  .nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .2s;display:inline-flex;align-items:center;min-height:24px;padding:2px 1px}
+  .nav-links a:hover{color:var(--text)}
+  .nav-cta{
+    display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:650;
+    border:1px solid var(--line-strong);border-radius:999px;padding:9px 15px;text-decoration:none;
+    transition:border-color .2s,background .2s,transform .2s;
+  }
+  .nav-cta:hover{border-color:var(--gold);background:rgba(244,182,63,.08);transform:translateY(-1px)}
+  .nav-toggle{display:none}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding:78px 0 44px;overflow:hidden}
+  .hero-bg{
+    position:absolute;inset:-20% -10% auto -10%;height:760px;pointer-events:none;
+    background:
+      radial-gradient(38% 42% at 18% 20%,rgba(244,182,63,.15),transparent 70%),
+      radial-gradient(34% 38% at 82% 12%,rgba(160,141,255,.14),transparent 72%),
+      radial-gradient(30% 30% at 62% 62%,rgba(110,224,165,.06),transparent 70%);
+    filter:blur(10px);
+  }
+  .hero-grid{
+    position:absolute;inset:0;pointer-events:none;opacity:.32;
+    background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:72px 72px;
+    mask-image:linear-gradient(to bottom,black,transparent 78%);
+    -webkit-mask-image:linear-gradient(to bottom,black,transparent 78%);
+  }
+  .hero .wrap{position:relative}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:650;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
+  }
+  .pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(110,224,165,.7);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(110,224,165,.55)}70%{box-shadow:0 0 0 8px rgba(110,224,165,0)}100%{box-shadow:0 0 0 0 rgba(110,224,165,0)}}
+  h1{
+    margin:22px 0 0;font-size:clamp(46px,7.4vw,88px);
+    padding-bottom:.1em;letter-spacing:-.052em;line-height:1.04;font-weight:780;max-width:980px;
+  }
+  h1 .soft{color:#b9bcc5}
+  h1 .grad{
+    background:linear-gradient(100deg,var(--gold-2) 0%,var(--gold) 38%,#ff9f5c 70%,var(--violet) 115%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .lede{margin:26px 0 0;max-width:720px;color:#c2c5cc;font-size:clamp(17px,1.55vw,20px);line-height:1.62}
+  .lede strong{color:var(--text);font-weight:650}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;text-decoration:none;font-weight:700;font-size:15px;
+    padding:13px 20px;border-radius:999px;border:1px solid transparent;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{background:var(--gold);color:#1c1305;box-shadow:0 10px 30px rgba(244,182,63,.2)}
+  .btn-primary:hover{background:var(--gold-2);box-shadow:0 14px 36px rgba(244,182,63,.26)}
+  .btn-ghost{background:rgba(255,255,255,.035);border-color:var(--line-strong);color:var(--text)}
+  .btn-ghost:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.28)}
+  .btn svg{width:17px;height:17px}
+  .stats{
+    list-style:none;padding:0;margin:54px 0 0;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--line);
+  }
+  .stats li{background:rgba(15,17,22,.88);padding:19px 20px}
+  .stats b{display:block;font-size:25px;letter-spacing:-.04em;line-height:1.1;color:var(--text)}
+  .stats span{display:block;margin-top:5px;font-size:12.5px;color:var(--muted);line-height:1.35}
+  .fit-note{
+    margin:30px 0 0;display:flex;gap:12px;align-items:flex-start;max-width:780px;
+    font-size:14px;color:var(--muted);
+  }
+  .fit-note .coin{
+    flex:0 0 auto;width:24px;height:24px;border-radius:50%;margin-top:2px;
+    background:radial-gradient(circle at 35% 30%,#ffe3a6,var(--gold) 55%,#b8750b);
+    box-shadow:inset 0 0 0 2px rgba(90,50,0,.28),0 4px 12px rgba(244,182,63,.22);
+  }
+
+  /* ---------- sections ---------- */
+  section{padding:76px 0}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:34px}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  h2{margin:8px 0 0;padding-bottom:.09em;font-size:clamp(31px,4vw,48px);line-height:1.07;letter-spacing:-.04em;font-weight:760}
+  .section-head p{margin:0;max-width:440px;color:var(--muted);font-size:15px}
+  .rule{height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+
+  /* ---------- project card ---------- */
+  .project{
+    background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0) 40%),var(--panel);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.22);
+  }
+  .project + .project{margin-top:34px}
+  .pad-lg{padding:44px}
+  .pad-md{padding:28px}
+  .project-top{display:grid;grid-template-columns:1.06fr .94fr;gap:0}
+  .project-copy{padding:44px 44px 38px}
+  .project-media{padding:28px 28px 28px 0;display:flex;align-items:stretch}
+  .badge{
+    display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:750;letter-spacing:.1em;text-transform:uppercase;
+    color:#1a1204;background:linear-gradient(120deg,var(--gold-2),var(--gold));border-radius:999px;padding:6px 11px;
+  }
+  .badge.violet{color:#120c26;background:linear-gradient(120deg,#c8bbff,var(--violet))}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0 18px}
+  .tag{font-family:var(--mono);font-size:11.5px;color:#c7cad2;border:1px solid var(--line-strong);border-radius:999px;padding:5px 9px;background:rgba(255,255,255,.025)}
+  .project h3{margin:0;padding-bottom:.07em;font-size:clamp(30px,3.6vw,44px);line-height:1.08;letter-spacing:-.045em;font-weight:760}
+  .project h3 em{font-style:normal;color:var(--gold-2)}
+  .project-sub{margin:9px 0 0;color:var(--muted);font-size:14px}
+  .project-desc{margin:20px 0 0;color:#c8cad0;font-size:16px;line-height:1.62}
+  .bullets{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:11px}
+  .bullets li{position:relative;padding-left:20px;color:#bdc0c8;font-size:14.5px;line-height:1.55}
+  .bullets li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:2px;background:var(--gold);transform:rotate(45deg)}
+  .bullets strong{color:var(--text);font-weight:650}
+  .project-links{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px;align-items:center}
+  .textlink{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:650;text-decoration:none;color:var(--gold-2);border-bottom:1px solid rgba(255,217,138,.3);padding:5px 0;transition:border-color .2s,color .2s}
+  .textlink:hover{color:#fff;border-color:#fff}
+  .textlink svg{width:14px;height:14px}
+  .note{font-size:12.5px;color:var(--dim);line-height:1.5;margin:18px 0 0;max-width:700px}
+
+  .keyvisual{
+    width:100%;height:100%;min-height:340px;border-radius:16px;overflow:hidden;position:relative;
+    border:1px solid var(--line);background:#0a0b0e;cursor:zoom-in;padding:0;text-align:left;
+  }
+  .keyvisual:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .keyvisual img{width:100%;height:100%;object-fit:cover}
+  .caption-chip{
+    position:absolute;left:12px;bottom:12px;font-family:var(--mono);font-size:11.5px;
+    background:rgba(7,8,10,.78);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);
+    border-radius:8px;padding:6px 9px;color:#e5e2da;
+  }
+
+  .specs{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+    border-top:1px solid var(--line);margin:0;
+  }
+  .specs div{background:#111318;padding:17px 22px}
+  .specs dt{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);font-weight:700}
+  .specs dd{margin:5px 0 0;font-size:13.5px;line-height:1.4;color:#d3d5db}
+
+  .gallery{padding:0 28px 28px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+  .shot{
+    padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0a0b0e;cursor:zoom-in;
+    position:relative;text-align:left;transition:transform .25s,border-color .25s,box-shadow .25s;
+  }
+  .shot:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.28);box-shadow:0 16px 34px rgba(0,0,0,.34)}
+  .shot:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .shot img{width:100%;height:100%;aspect-ratio:16/9;object-fit:cover;transition:transform .4s ease}
+  .shot:hover img{transform:scale(1.012)}
+  .shot span{
+    position:absolute;left:0;right:0;bottom:0;padding:28px 12px 10px;font-size:11.5px;color:#ece9e1;
+    background:linear-gradient(transparent,rgba(5,6,8,.86));font-family:var(--mono);
+  }
+  .shot.span4{grid-column:span 4}
+  .shot.span2{grid-column:span 2}
+  .shot.span3{grid-column:span 3}
+  .shot.portrait img{aspect-ratio:9/16;object-fit:cover;object-position:top}
+
+  /* ---------- split project (holywar) ---------- */
+  .split{display:grid;grid-template-columns:1fr .86fr;gap:46px;align-items:start}
+  .media-stack{display:grid;gap:14px}
+  .phone-frame{
+    background:#0a0b0e;border:1px solid var(--line-strong);border-radius:30px;padding:9px;
+    box-shadow:0 26px 60px rgba(0,0,0,.4);max-width:330px;margin-inline:auto;
+  }
+  .phone-frame .screen{border-radius:22px;overflow:hidden;background:#000}
+  .phone-frame img,.phone-frame video{width:100%;height:auto}
+  .media-caption{font-family:var(--mono);font-size:11.5px;color:var(--dim);text-align:center;line-height:1.5}
+  .brain-card{background:#111318;border:1px solid var(--line);border-radius:18px;padding:14px}
+  .brain-card img{width:100%;border-radius:10px}
+  .brain-card p{margin:10px 4px 2px;font-size:12.5px;color:var(--muted);line-height:1.45}
+  .atlas-strip{display:grid;grid-template-columns:1.4fr .6fr;gap:14px;margin-top:30px}
+  .atlas-strip figure{margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#111318;display:flex;flex-direction:column}
+  .atlas-strip img{width:100%;height:auto;max-height:280px;object-fit:cover;object-position:left top;flex:1}
+  .atlas-strip figcaption{padding:10px 14px;font-family:var(--mono);font-size:11.5px;color:var(--muted);border-top:1px solid var(--line)}
+
+  /* ---------- fractal ---------- */
+  .render-hero{
+    position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+    min-height:520px;background:#06070a;cursor:zoom-in;
+  }
+  .render-hero img{width:100%;height:100%;min-height:520px;object-fit:cover}
+  .render-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,9,.04) 35%,rgba(5,6,9,.8));pointer-events:none}
+  .render-overlay{position:absolute;left:0;right:0;bottom:0;padding:34px 38px;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+  .render-overlay h3{margin:0;padding-bottom:.08em;font-size:clamp(28px,4vw,52px);line-height:1.06;letter-spacing:-.045em;max-width:680px}
+  .render-overlay p{margin:10px 0 0;color:#c3c5cc;font-size:14.5px;max-width:640px}
+  .render-meta{font-family:var(--mono);font-size:11.5px;color:#d6d2c9;text-align:right;white-space:nowrap}
+  .render-grid{display:grid;grid-template-columns:1.45fr .55fr;gap:14px;margin-top:14px}
+  .render-grid figure{margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#111318;cursor:zoom-in;display:flex;flex-direction:column}
+  .render-grid img{width:100%;height:auto;object-fit:cover;max-height:330px}
+  .render-grid figcaption{padding:10px 14px;font-family:var(--mono);font-size:11.5px;color:var(--muted);border-top:1px solid var(--line)}
+
+  /* ---------- kusaku ---------- */
+  .phone-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px}
+  .phone-row.phones-2{grid-template-columns:repeat(2,1fr);margin-top:0}
+  .phone-row .phone-frame{max-width:none;margin:0}
+  .phone-row .phone-frame img{width:100%}
+  .phone-row .media-caption{margin-top:9px}
+  .window-frame{
+    background:#0a0b0e;border:1px solid var(--line-strong);border-radius:16px;padding:8px;
+    box-shadow:0 24px 55px rgba(0,0,0,.4);
+  }
+  .window-frame video,.window-frame img{width:100%;height:auto;border-radius:9px;display:block}
+  .window-frame.video-box{padding:0}
+  .window-frame.video-box video,.window-frame.video-box img{border-radius:15px}
+  .sfml-shot{margin:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#0a0b0e}
+  .sfml-shot img{width:100%;height:auto;display:block}
+  .sfml-shot figcaption{padding:10px 14px;font-family:var(--mono);font-size:11.5px;color:var(--muted);border-top:1px solid var(--line)}
+  .cpp-grid{margin-top:26px}
+  .cpp-grid .tool img{width:100%;height:170px;object-fit:cover;object-position:center;border-radius:10px;margin-bottom:14px;border:1px solid var(--line)}
+  .tool-grid > *,.wind-inner > *{min-width:0}
+  .tool{min-width:0}
+  .tool p,.project-desc,.bullets li,.agent-chip,.flow-node,.flow-label,.mono{overflow-wrap:anywhere}
+
+  /* ---------- ai ---------- */
+  .ai-section{background:
+    radial-gradient(50% 60% at 12% 0%,rgba(160,141,255,.12),transparent 70%),
+    radial-gradient(40% 50% at 95% 30%,rgba(244,182,63,.07),transparent 70%);
+  }
+  .wind-card{
+    border:1px solid rgba(160,141,255,.24);border-radius:var(--radius);overflow:hidden;
+    background:linear-gradient(145deg,rgba(160,141,255,.12),rgba(20,23,29,.96) 44%);position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,.26);
+  }
+  .wind-card::before{
+    content:"";position:absolute;width:420px;height:420px;right:-120px;top:-180px;border-radius:50%;
+    background:radial-gradient(circle,rgba(160,141,255,.24),transparent 69%);pointer-events:none;
+  }
+  .wind-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;padding:40px}
+  .wind-brand{display:flex;align-items:center;gap:14px}
+  .wind-brand img{width:58px;height:58px;border-radius:16px;box-shadow:0 12px 30px rgba(160,141,255,.25)}
+  .wind-brand b{display:block;font-size:18px;letter-spacing:-.02em}
+  .wind-brand span{display:block;font-size:12.5px;color:var(--muted);margin-top:1px}
+  .wind-card h3{margin:22px 0 0;padding-bottom:.07em;font-size:clamp(30px,3.4vw,44px);line-height:1.08;letter-spacing:-.045em}
+  .wind-card .project-desc{max-width:640px}
+  .wind-what{
+    margin:18px 0 0;max-width:660px;font-size:15.5px;line-height:1.62;color:#c9cad3;
+    border-left:2px solid rgba(160,141,255,.55);padding-left:16px;
+  }
+  .wind-what-label{
+    display:block;font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+    color:#b9a8ff;margin-bottom:7px;
+  }
+  .wind-what em{color:var(--text);font-style:normal;font-weight:600}
+  .wind-role{
+    margin-top:20px;border:1px solid rgba(160,141,255,.3);border-radius:16px;
+    background:linear-gradient(150deg,rgba(160,141,255,.13),rgba(140,120,255,.04));
+    padding:18px 20px;
+  }
+  .wind-role-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .wind-role-label{
+    font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+    color:#120c26;background:linear-gradient(120deg,#c8bbff,#a08dff);border-radius:999px;padding:3px 9px;
+  }
+  .wind-role-head b{font-size:16.5px;letter-spacing:-.02em;color:#fff}
+  .wind-role-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+  .wind-role-grid span{display:block;font-size:11.5px;color:#c3b6ff;margin-bottom:5px}
+  .wind-role-grid p{margin:0;font-size:13.5px;line-height:1.55;color:#c6c8d0}
+  .wind-role-grid em{color:#e6e2ff;font-style:normal}
+  .wind-role-foot{margin:13px 0 0;font-size:11.5px;color:var(--dim);font-family:var(--mono);line-height:1.5}
+  .wind-card ul.bullets li::before{background:var(--violet)}
+  .wind-links{margin-top:26px;display:flex;gap:16px;flex-wrap:wrap}
+  .wind-links a{color:#d4c9ff}
+  .wind-links a:hover{color:#fff;border-color:#fff}
+  .flow-box{display:flex;flex-direction:column;justify-content:center;align-self:center;gap:14px;background:rgba(7,8,12,.45);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:22px}
+  .flow-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
+  .flow-row{display:flex;align-items:center;gap:10px}
+  .flow-node{
+    flex:1;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.035);border-radius:12px;padding:11px 10px;
+    font-size:12px;line-height:1.3;color:#dadbe1;text-align:center;
+  }
+  .flow-node b{display:block;font-size:12.5px;color:#fff;font-weight:650}
+  .flow-node small{display:block;color:var(--dim);font-size:10.5px;margin-top:3px;font-family:var(--mono)}
+  .flow-arrow{color:var(--violet);font-size:17px;flex:0 0 auto}
+  .agent-chip{
+    display:flex;align-items:center;gap:10px;border:1px solid rgba(110,224,165,.26);background:rgba(110,224,165,.06);
+    border-radius:12px;padding:10px 12px;font-size:12px;color:#c9f7df;line-height:1.35;
+  }
+  .agent-chip .live{width:7px;height:7px;border-radius:50%;background:var(--green);flex:0 0 auto;animation:pulse 2.4s infinite}
+  .agent-chip code{font-family:var(--mono);font-size:11px;color:#fff}
+
+  .tool-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:26px}
+  .tool{
+    background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;
+    transition:border-color .25s,transform .25s,background .25s;
+  }
+  .tool:hover{border-color:rgba(255,255,255,.22);transform:translateY(-2px);background:var(--panel-2)}
+  .tool .tool-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  .tool h4{margin:0;font-size:19px;letter-spacing:-.025em}
+  .tool .lang{font-family:var(--mono);font-size:10.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 8px;white-space:normal}
+  .tool p{margin:10px 0 0;font-size:14px;color:#b9bcc4;line-height:1.55}
+  .tool p b{color:var(--text);font-weight:650}
+  .tool .tool-link{display:inline-flex;margin-top:13px;font-size:13px;font-weight:650;color:var(--gold-2);text-decoration:none;border-bottom:1px solid rgba(255,217,138,.3)}
+  .tool .tool-link:hover{color:#fff;border-color:#fff}
+
+  .workflow{
+    margin-top:26px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(15,17,22,.7);padding:30px;
+  }
+  .workflow-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:22px}
+  .workflow-head h4{margin:5px 0 0;font-size:26px;letter-spacing:-.035em}
+  .workflow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-radius:14px;overflow:hidden}
+  .step{background:#12151a;padding:20px}
+  .step .num{font-family:var(--mono);font-size:11px;color:var(--gold)}
+  .step b{display:block;margin-top:8px;font-size:14.5px;letter-spacing:-.01em}
+  .step p{margin:6px 0 0;font-size:12.8px;color:var(--muted);line-height:1.5}
+
+  /* ---------- range ---------- */
+  .range-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px}
+  .range-card{border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:15px;padding:18px;text-decoration:none;transition:border-color .2s,background .2s,transform .2s}
+  .range-card:hover{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.045);transform:translateY(-2px)}
+  .range-card .rc-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .range-card b{font-size:14.5px;letter-spacing:-.01em}
+  .range-card .arrow{color:var(--dim);font-size:15px}
+  .range-card p{margin:7px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
+  .gh-links{margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;font-size:12.5px;color:var(--dim)}
+  .gh-links span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .gh-links a{color:var(--gold-2);text-decoration:none;border-bottom:1px solid rgba(255,217,138,.3);padding-bottom:1px;white-space:nowrap}
+  .gh-links a:hover{color:#fff;border-color:#fff}
+
+  /* ---------- contact ---------- */
+  .contact{
+    position:relative;overflow:hidden;border-top:1px solid var(--line);
+    background:
+      radial-gradient(46% 70% at 22% 50%,rgba(244,182,63,.15),transparent 72%),
+      radial-gradient(38% 62% at 82% 42%,rgba(160,141,255,.14),transparent 74%);
+  }
+  .contact-inner{padding:92px 0 80px}
+  .contact h2{font-size:clamp(40px,6vw,72px);max-width:920px;letter-spacing:-.05em;line-height:1.08;padding-bottom:.09em}
+  .contact h2 span{color:var(--gold-2)}
+  .contact p{max-width:620px;color:#c3c5cc;margin:22px 0 0}
+  .contact-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+  .contact-meta{display:flex;flex-wrap:wrap;gap:24px;margin-top:44px;font-size:13px;color:var(--muted)}
+  .contact-meta span{display:inline-flex;align-items:center;gap:8px}
+  .contact-meta .dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+  footer{border-top:1px solid var(--line);padding:26px 0 40px;font-size:12px;color:var(--dim)}
+  .footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none;transition:none}
+    .pulse-dot,.agent-chip .live{animation:none}
+  }
+
+  /* ---------- lightbox ---------- */
+  .lightbox{
+    position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:28px;
+    background:rgba(4,5,7,.92);backdrop-filter:blur(16px);
+  }
+  .lightbox.open{display:grid}
+  .lb-shell{max-width:1400px;width:100%;display:flex;flex-direction:column;gap:12px;align-items:center}
+  .lb-img{max-height:82vh;width:auto;max-width:100%;border-radius:12px;box-shadow:0 30px 90px rgba(0,0,0,.6);background:#000}
+  .lb-bar{display:flex;justify-content:space-between;width:100%;align-items:center;gap:16px}
+  .lb-caption{font-family:var(--mono);font-size:12px;color:#c9c6bd;line-height:1.4}
+  .lb-close,.lb-nav{
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:999px;
+    padding:9px 14px;font-size:13px;cursor:pointer;transition:background .2s,border-color .2s;
+  }
+  .lb-close:hover,.lb-nav:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
+  .lb-actions{display:flex;gap:8px}
+  body.lb-open{overflow:hidden}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:980px){
+    .project-top,.split,.wind-inner{grid-template-columns:1fr}
+    .project-media{padding:0 24px 0}
+    .keyvisual{min-height:0;aspect-ratio:16/9}
+    .specs{grid-template-columns:repeat(2,1fr)}
+    .wind-inner{padding:30px}
+    .workflow-grid{grid-template-columns:repeat(2,1fr)}
+    .range-grid{grid-template-columns:repeat(2,1fr)}
+    .render-overlay{padding:24px;display:block}
+    .render-meta{text-align:left;margin-top:12px}
+    .render-grid{grid-template-columns:1fr}
+    .wind-role-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:760px){
+    .wrap{width:min(var(--max),calc(100% - 32px))}
+    .nav-links{display:none}
+    .hero{padding-top:54px}
+    .hero-actions .btn{width:100%;justify-content:center}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .project-copy{padding:30px 24px 26px}
+    .project-media{padding:0 16px}
+    .gallery{padding:0 16px 20px;grid-template-columns:repeat(2,1fr)}
+    .shot.span4,.shot.span2,.shot.span3{grid-column:span 1}
+    .specs{grid-template-columns:1fr}
+    .section-head{display:block}
+    .section-head p{margin-top:14px}
+    .split{gap:28px}
+    .atlas-strip{grid-template-columns:1fr}
+    .phone-row{grid-template-columns:1fr;max-width:320px;margin-inline:auto}
+    .wind-what{font-size:14.5px;padding-left:12px;border-left-width:2px}
+    .wind-role{padding:15px 14px}
+    .wind-role-head b{font-size:15px}
+    .tool-grid{grid-template-columns:1fr}
+    .workflow-grid{grid-template-columns:1fr}
+    .range-grid{grid-template-columns:1fr}
+    .wind-inner{padding:24px}
+    .contact-inner{padding:64px 0}
+    section{padding:56px 0}
+    .render-hero,.render-hero img{min-height:380px}
+    .pad-lg{padding:24px 18px}
+    .pad-md{padding:16px}
+    .lb-bar{flex-direction:column;align-items:flex-start}
+    .lb-actions{width:100%;justify-content:space-between}
+  }
+
+  /* ---------- print / PDF ---------- */
+  @page{size:letter;margin:11mm 12mm 10mm}
+  @media print{
+    :root{
+      --bg:#fff;--text:#111;--muted:#4a4a4a;--dim:#6a6a6a;--line:rgba(0,0,0,.16);
+      --panel:#fff;--panel-2:#fff;--gold:#8a5b00;--gold-2:#8a5b00;
+      --violet:#5b47a8;--green:#1f7a4d;
+    }
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    html,body{background:#fff!important;color:#111;font-size:9pt;line-height:1.4}
+    .wrap{width:100%;max-width:none;margin:0}
+    .nav,.hero-bg,.hero-grid,.hero-actions,.lb-actions,.skip,.contact-links,.nav-cta,
+    .caption-chip,.gh-links,.workflow-head p{display:none!important}
+    .reveal{opacity:1!important;transform:none!important}
+    a{color:#111;text-decoration:none}
+    section{padding:0;break-inside:auto}
+    video{display:none!important}
+
+    /* ----- masthead ----- */
+    .pdf-head{display:flex!important;justify-content:space-between;align-items:flex-end;gap:6mm;
+      border-bottom:.8pt solid #111;padding-bottom:2.4mm;margin-bottom:3mm}
+    .pdf-head>div:first-child{flex:1 1 auto;min-width:0;max-width:62%}
+    .pdf-name{font-size:16pt;font-weight:700;letter-spacing:-.02em;line-height:1.05}
+    .pdf-role{font-size:7.2pt;color:#444;margin-top:1mm;line-height:1.3}
+    .pdf-contact{font-size:6.4pt;flex:0 0 auto;color:#333;text-align:right;line-height:1.5;font-family:var(--mono);white-space:nowrap}
+
+    /* ----- hero / cover ----- */
+    .hero{padding:0 0 5mm;border-bottom:none;margin-bottom:4mm}
+    .eyebrow{font-size:6.6pt;letter-spacing:.16em;color:#5a5a5a}
+    .pulse-dot{display:none}
+    h1{margin:2.4mm 0 0;font-size:22pt;line-height:1.02;letter-spacing:-.03em;padding:0;font-weight:700}
+    h1 .soft{color:#3a3a3a}
+    h1 .grad{background:none!important;-webkit-background-clip:border-box;background-clip:border-box;color:#111!important;-webkit-text-fill-color:#111!important}
+    .lede{margin:3mm 0 0;max-width:150mm;font-size:9.4pt;line-height:1.45;color:#222}
+    .lede strong{color:#000}
+    .fit-note{margin:3mm 0 0;max-width:150mm;font-size:8pt;color:#333;gap:6px}
+    .fit-note .coin{width:10px;height:10px;background:#8a5b00;box-shadow:none;margin-top:1.5mm}
+    .stats{margin:4mm 0 0;grid-template-columns:repeat(4,1fr);border:.6pt solid #bbb;background:#bbb;border-radius:6px;overflow:hidden}
+    .stats li{background:#fff;padding:2.4mm 3mm}
+    .stats b{font-size:11.5pt;line-height:1.1;margin-bottom:.6mm}
+    .stats span{font-size:6.4pt;margin-top:.4mm;color:#4a4a4a;line-height:1.3}
+
+    /* ----- section heads ----- */
+    .section-head{display:block;margin:0 0 3mm}
+    .section-head p{margin:1.6mm 0 0;max-width:none;font-size:8pt;color:#444}
+    .kicker{font-size:6.4pt;letter-spacing:.18em;color:#8a5b00}
+    h2{margin:1.2mm 0 0;font-size:16pt;line-height:1.06;letter-spacing:-.02em;padding:0;font-weight:700}
+
+    /* ----- projects ----- */
+    .project{
+      background:#fff!important;border:.6pt solid #c8c8c8!important;border-radius:8px;
+      box-shadow:none!important;margin:0 0 4mm!important;padding:0!important;overflow:hidden;
+    }
+    .project + .project{margin-top:0!important}
+    .project-top{display:grid;grid-template-columns:1.34fr .66fr;gap:0}
+    .project-copy{padding:4mm 4mm 3.2mm!important}
+    .project-media{padding:3mm 3mm 3mm 0!important;display:block}
+    .keyvisual{height:52mm;min-height:0;aspect-ratio:auto;border-radius:5px;border:.6pt solid #d5d5d5}
+    .keyvisual img{height:100%;object-fit:cover}
+    .badge{color:#fff!important;background:#8a5b00!important;font-size:6.2pt;padding:1mm 2.4mm;letter-spacing:.1em}
+    .badge.violet{background:#5b47a8!important}
+    .tags{margin:2mm 0 2.2mm;gap:1.2mm}
+    .tag{font-size:6.2pt;padding:.8mm 1.8mm;border:.5pt solid #ccc;background:#fafafa;color:#333}
+    .project h3{font-size:14.5pt!important;line-height:1.1!important;letter-spacing:-.02em;margin:0!important;padding:0!important}
+    .project h3 em{color:#8a5b00!important}
+    .project-sub{margin:1.2mm 0 0;font-size:7.2pt;color:#5a5a5a}
+    .project-desc{margin:2mm 0 0;font-size:8.6pt;line-height:1.42;color:#222;max-width:none}
+    .bullets{gap:1mm;margin:2.4mm 0 0}
+    .bullets li{font-size:8pt;line-height:1.38;padding-left:4mm;color:#222}
+    .bullets li::before{width:1.6mm;height:1.6mm;top:.62em;background:#8a5b00}
+    .project-links{margin-top:2.6mm;gap:6mm}
+    .textlink{font-size:7.4pt;color:#8a5b00;border-bottom:.5pt solid #c9a45e;padding:0}
+    .note{font-size:6.6pt;color:#555;margin:1.4mm 0 0;max-width:none;padding:0 4mm 2.4mm!important}
+    .specs{grid-template-columns:repeat(3,1fr);background:#e4e4e4;border-top:.6pt solid #d0d0d0}
+    .specs div{background:#fbfbfb;padding:2mm 3mm}
+    .specs dt{font-size:5.9pt;color:#666;letter-spacing:.12em}
+    .specs dd{font-size:7.2pt;margin:.6mm 0 0;color:#222}
+
+    /* galleries become the visual proof in print */
+    .gallery{display:none!important}
+    .gallery .shot{grid-column:span 1!important;border:.5pt solid #dcdcdc;border-radius:4px}
+    .gallery .shot img{aspect-ratio:16/9;object-fit:cover}
+    .gallery .shot:nth-child(n){display:block!important}
+    .gallery .shot span{font-size:6.2pt;padding:.8mm 1.2mm}
+    .gallery .shot.portrait img{aspect-ratio:16/9;object-position:top}
+    .gallery .shot:nth-child(n+4){display:block!important}
+    .gallery .shot span{position:static;background:none;color:#4a4a4a;font-size:6pt;padding:1mm 1.4mm;line-height:1.3;font-family:var(--sans)}
+
+    /* ----- split projects (HOLYWAR / WalkingFarmer / TypeWriter / Kusaku) ----- */
+    .split{grid-template-columns:1.5fr .5fr!important;gap:5mm;align-items:start!important}
+    /* TypeWriter puts its media first in the DOM: give the copy the wide column */
+    article.project[aria-labelledby="typewriter-title"] .split{grid-template-columns:.58fr 1.42fr!important}
+    article.project[aria-labelledby="typewriter-title"] .media-stack{order:0}
+    article.project[aria-labelledby="typewriter-title"] .media-stack>div{max-width:none!important}
+    .media-stack{gap:2mm}
+    .phone-frame{max-width:58mm!important;margin:0!important;padding:1.4mm;border-radius:7px;border:.6pt solid #ccc;box-shadow:none!important}
+    .phone-frame .screen{border-radius:5px}
+    .media-caption{font-size:6.2pt;color:#666;text-align:left;margin-top:1mm}
+    .phone-row{grid-template-columns:repeat(3,1fr)!important;max-width:none!important;margin:0!important;gap:3mm}
+    .phone-row>div:nth-child(n+3){display:block!important}
+    .phone-row .phone-frame{max-width:42mm!important}
+    .phone-row .phone-frame img{width:100%!important;height:74mm!important;object-fit:contain;object-position:top}
+    .phone-row>div:nth-child(1){display:block!important}
+    .phone-row>div:nth-child(2){display:block!important}
+    .brain-card{display:block!important;margin-top:3mm!important;padding:0!important;border:.6pt solid #d8d8d8!important;border-radius:6px;background:#fff!important;overflow:hidden}
+    .brain-card img{width:100%;max-height:88mm;object-fit:contain;background:#1a1a19;border-radius:0}
+    .brain-card p{font-size:6.4pt;color:#555;margin:1.4mm 2mm 2mm!important;line-height:1.35}
+    .atlas-strip{display:grid!important;grid-template-columns:1fr 1fr;gap:2mm;margin-top:3mm}
+    .atlas-strip figure{break-inside:avoid}
+    .atlas-strip figure{border:.5pt solid #dcdcdc;border-radius:5px;background:#fff}
+    .atlas-strip img{max-height:34mm;object-fit:cover;object-position:left top}
+    .atlas-strip figcaption{font-size:6pt;color:#555;padding:1mm 1.6mm;border-top:.5pt solid #e2e2e2}
+    .window-frame{padding:0!important;border-radius:5px;border:.6pt solid #ccc;box-shadow:none!important;max-width:92mm}
+    .window-frame.video-box{max-width:118mm}
+    .video-box>img{width:100%;height:auto}
+    .tw-video{aspect-ratio:816/480}
+    .portrait-video{aspect-ratio:600/1234}
+    .sfml-shot{border:.6pt solid #ccc!important;border-radius:5px}
+    .sfml-shot img{max-height:64mm;width:100%;object-fit:cover;object-position:top}
+    .sfml-shot figcaption{font-size:6pt;color:#555;padding:1mm 1.6mm;border-top:.5pt solid #e2e2e2}
+
+    /* ----- fractal ----- */
+    .render-hero{min-height:0!important;max-height:none!important;overflow:hidden;border:.6pt solid #ccc!important;border-radius:7px}
+    .render-hero img{min-height:0!important;max-height:88mm!important;width:100%;object-fit:cover}
+    .render-hero::after{display:none}
+    .render-overlay{position:static!important;background:#fff!important;color:#111!important;padding:3mm 4mm!important;display:block!important}
+    .render-overlay h3{font-size:13pt!important;line-height:1.1!important;color:#111!important;padding:0!important}
+    .render-overlay p{color:#444!important;font-size:7.6pt;margin-top:1.4mm}
+    .render-meta{color:#666!important;text-align:left!important;margin-top:1.4mm;font-size:6.4pt;white-space:normal}
+    .render-grid{display:grid!important;grid-template-columns:1.5fr .5fr;gap:3mm;margin-top:3mm}
+    .render-grid figure{border:.6pt solid #ccc!important;border-radius:5px;background:#fff;display:flex;flex-direction:column}
+    .render-grid img{max-height:44mm!important;height:auto;object-fit:cover;width:100%}
+    .render-grid figcaption{font-size:6pt;color:#555;padding:1mm 1.6mm;border-top:.5pt solid #e2e2e2}
+    .render-grid>div:last-child{border:.6pt solid #ccc;border-radius:5px;padding:2.4mm 3mm;background:#fbfbfb}
+    .render-grid>div:last-child .kicker{font-size:5.9pt}
+    .render-grid>div:last-child .bullets li{font-size:6.8pt}
+
+    /* ----- c++ section heading ----- */
+    #cpp{margin-top:5mm!important;padding-top:4mm;border-top:.6pt solid #d5d5d5}
+    .cpp-grid{display:grid!important;grid-template-columns:1fr 1fr;gap:3mm;margin-top:3mm}
+    .cpp-grid .tool img{height:56mm;margin-bottom:2.4mm}
+
+    /* ----- wind ----- */
+    .ai-section{background:#fff!important;padding-top:4mm;border-top:.6pt solid #d5d5d5}
+    .wind-card{background:#fff!important;border:.8pt solid #b9aee0!important;border-radius:8px;box-shadow:none!important}
+    .wind-card::before{display:none}
+    .wind-inner{grid-template-columns:1.42fr .58fr!important;gap:5mm;padding:4mm 4mm!important}
+    .wind-brand img{width:12mm;height:12mm;border-radius:3mm;box-shadow:none}
+    .wind-brand b{font-size:10.5pt}
+    .wind-brand span{font-size:6.6pt;margin-top:.4mm;color:#555}
+    .wind-card h3{font-size:15pt!important;line-height:1.1!important;margin:2.6mm 0 0!important;padding:0!important;color:#111!important}
+    .wind-what{font-size:8.2pt;line-height:1.42;color:#222;margin:2.2mm 0 0;padding-left:3.4mm;max-width:none;border-left:1.6pt solid #7b68c9}
+    .wind-what-label{font-size:6pt;color:#5b47a8;margin-bottom:1mm}
+    .wind-what em{color:#000}
+    .wind-role{margin-top:2.6mm;padding:2.6mm 3mm;border:.6pt solid #c3b8e6;border-radius:6px;background:#f7f5fd!important}
+    .wind-role-head{gap:2mm}
+    .wind-role-label{font-size:5.8pt;padding:.7mm 2mm;background:#5b47a8!important;color:#fff!important}
+    .wind-role-head b{font-size:9.6pt;color:#111}
+    .wind-role-grid{grid-template-columns:1fr 1fr!important;gap:3mm;margin-top:2mm}
+    .wind-role-grid span{font-size:6.2pt;color:#4a3d8f;margin-bottom:.8mm}
+    .wind-role-grid p{font-size:7pt;line-height:1.35;color:#333}
+    .wind-role-grid em{color:#111}
+    .wind-role-foot{font-size:6.2pt;color:#666;margin-top:1.6mm}
+    .flow-box{background:#fbfbfb!important;border:.6pt solid #d9d9d9;border-radius:6px;padding:2.6mm;gap:2mm;align-self:start}
+    .flow-label{font-size:5.8pt;color:#666}
+    .flow-row{gap:1.6mm}
+    .flow-node{padding:1.6mm 1.2mm;border:.5pt solid #d5d5d5;background:#fff;border-radius:3px}
+    .flow-node b{font-size:6.4pt;color:#111}
+    .flow-node small{font-size:5.4pt;color:#666;margin-top:.4mm}
+    .flow-arrow{color:#5b47a8;font-size:8pt}
+    .agent-chip{font-size:6.2pt;padding:1.6mm 2mm;border:.5pt solid #b7dcc7;background:#f2fbf6;color:#1f5c3f;border-radius:3px}
+    .agent-chip .live{width:1.6mm;height:1.6mm;background:#1f7a4d}
+    .agent-chip code{color:#111;font-size:5.8pt}
+    .wind-card ul.bullets li::before{background:#5b47a8}
+    .wind-links{margin-top:2.6mm;gap:6mm}
+    .wind-links a{color:#5b47a8}
+
+    /* ----- tools / workflow / toolbox ----- */
+    .tool-grid{display:grid!important;grid-template-columns:1fr 1fr;gap:3mm;margin-top:3mm}
+    .tool{border:.6pt solid #d5d5d5!important;border-radius:6px;padding:2.6mm 3mm;background:#fff!important;break-inside:avoid}
+    .tool h4{font-size:9.4pt;color:#111}
+    .tool .lang{font-size:5.8pt;color:#666;border:.5pt solid #ddd;padding:.6mm 1.6mm}
+    .tool p{font-size:7.4pt;margin-top:1.6mm;color:#333;line-height:1.4}
+    .workflow{margin-top:3.4mm;padding:3.4mm;background:#fff!important;border:.6pt solid #d5d5d5!important;border-radius:6px;break-inside:avoid}
+    .workflow-head{margin-bottom:2.4mm}
+    .workflow-head h4{font-size:11pt}
+    .workflow-grid{grid-template-columns:repeat(4,1fr);background:#e0e0e0}
+    .step{background:#fff;padding:2.8mm 3mm}
+    .step .num{font-size:5.8pt;color:#8a5b00}
+    .step b{font-size:7.4pt;margin-top:1.2mm}
+    .step p{font-size:6.8pt;margin-top:1mm;color:#444}
+    .range-grid{grid-template-columns:repeat(2,1fr);gap:2.4mm;margin-top:2.6mm}
+    .range-card{padding:3mm 3.4mm;border:.6pt solid #d5d5d5;border-radius:5px;background:#fff}
+    .range-card b{font-size:8.4pt}
+    .range-card p{font-size:7.2pt;margin-top:1mm;color:#444}
+    .range-card .arrow{color:#8a5b00}
+
+    /* ----- contact ----- */
+    .contact{background:#fff!important;border-top:1.4pt solid #111;margin-top:4mm;padding:0;break-inside:avoid}
+    .contact-inner{padding:4mm 0 0}
+    .contact .kicker{color:#8a5b00}
+    .contact h2{font-size:16pt!important;line-height:1.08;padding:0;margin-top:1mm}
+    .contact h2 span{color:#8a5b00!important}
+    .contact p{font-size:8.2pt;color:#333;margin:2mm 0 0;max-width:none}
+    .contact-meta{margin-top:2.6mm;font-size:7pt;gap:6mm;color:#444}
+    .contact-meta .dot{background:#8a5b00;width:1.4mm;height:1.4mm}
+    footer{padding:3mm 0 0;border-top:.5pt solid #ddd;margin-top:3mm;font-size:6.2pt;color:#666}
+    .footer-inner{display:flex;justify-content:space-between}
+
+    /* keep blocks from splitting across pages */
+    .section-head,.project-top,.specs,.gallery,.split,.wind-inner,.render-hero,.contact{break-inside:avoid}
+    h1,h2,h3{break-after:avoid}
+    .project h3,.wind-card h3{break-after:avoid}
+    article.project[aria-labelledby="fractal-title"],
+    article.project[aria-labelledby="kusaku-title"],
+    article.project[aria-labelledby="farmer-title"],
+    article.project[aria-labelledby="typewriter-title"],
+    .wind-card,.tool,.workflow,.range-grid,.cpp-grid,.contact,.brain-card,
+    .atlas-strip,.render-grid,.phone-row,.media-stack{break-inside:avoid}
+    .section-head{break-after:avoid-page}
+    .ai-section .section-head{break-after:avoid;break-inside:avoid}
+    .note{break-before:avoid;break-inside:avoid}
+
+    /* ===== screenshot pass: every real capture stays in the PDF ===== */
+    .keyvisual{height:auto!important;aspect-ratio:16/9!important;display:block!important;width:100%!important;padding:0!important;overflow:hidden!important}
+    .keyvisual img{position:static!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}
+    .gallery{
+      display:grid!important;grid-template-columns:1fr 1fr!important;gap:2.4mm!important;
+      padding:0 4mm 4mm!important;background:none!important;margin:0!important;
+      break-inside:avoid!important;
+    }
+    .gallery .shot{
+      display:block!important;grid-column:auto!important;position:static!important;
+      padding:0!important;margin:0!important;border:.5pt solid #d0d0d0!important;
+      border-radius:4px!important;background:#fff!important;overflow:hidden!important;
+      box-shadow:none!important;transform:none!important;cursor:default!important;
+    }
+    .gallery .shot img{
+      display:block!important;width:100%!important;height:auto!important;
+      aspect-ratio:16/9!important;object-fit:cover!important;transform:none!important;
+    }
+    .gallery .shot.portrait img{aspect-ratio:16/9!important;object-position:top!important;object-fit:cover!important}
+    .gallery .shot span{
+      position:static!important;display:block!important;padding:1mm 1.6mm!important;
+      background:#fff!important;color:#4a4a4a!important;font-size:6pt!important;
+      line-height:1.3!important;font-family:var(--sans)!important;
+    }
+
+    .phone-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:3mm!important;max-width:none!important;margin:0!important}
+    .phone-row>div:nth-child(n){display:block!important}
+    .phone-row .phone-frame{max-width:none!important;margin:0!important;padding:1.4mm!important}
+    .phone-row .phone-frame img{width:100%!important;height:auto!important;max-height:96mm!important;object-fit:contain!important;object-position:top!important}
+    .phone-row .media-caption{font-size:6pt!important;text-align:left!important;margin-top:1mm!important}
+    article.project[aria-labelledby="kusaku-title"] .split{grid-template-columns:1.15fr .85fr!important}
+
+    .atlas-strip{display:grid!important;grid-template-columns:1.45fr .55fr!important;gap:2.4mm!important;margin-top:3mm!important;break-inside:avoid!important}
+    .atlas-strip figure{display:flex!important;flex-direction:column!important;border:.5pt solid #d0d0d0!important;border-radius:4px!important;background:#fff!important;overflow:hidden!important}
+    .atlas-strip img{width:100%!important;height:auto!important;max-height:none!important;object-fit:cover!important;object-position:left top!important;flex:0 0 auto!important}
+    .atlas-strip figcaption{font-size:6pt!important;color:#4a4a4a!important;padding:1mm 1.6mm!important;border-top:.5pt solid #e2e2e2!important}
+
+    .brain-card{break-inside:avoid!important}
+    .brain-card img{width:auto!important;max-width:100%!important;height:auto!important;max-height:62mm!important;object-fit:contain!important;background:#fff!important;display:block!important;margin:0 auto!important}
+
+    .render-hero{break-inside:avoid!important;position:relative!important}
+    .render-hero img{display:block!important;width:100%!important;height:58mm!important;min-height:0!important;object-fit:cover!important}
+    .render-grid{display:grid!important;grid-template-columns:1.45fr .55fr!important;gap:3mm!important;margin-top:3mm!important;break-inside:avoid!important}
+    .render-grid figure{display:flex!important;flex-direction:column!important}
+    .render-grid img{display:block!important;width:100%!important;height:auto!important;max-height:none!important;object-fit:cover!important}
+
+    /* fractal: "what it exercises" card readable, full width under the render */
+    .render-grid{grid-template-columns:1fr!important;gap:2.5mm!important}
+    .render-grid img{max-height:72mm!important;height:72mm!important;width:100%!important;object-fit:cover!important}
+    .render-grid>div:last-child{display:block!important;padding:2.8mm 3.4mm!important;background:#fbfbfb!important}
+    .render-grid>div:last-child .kicker{font-size:6.6pt!important;letter-spacing:.14em!important}
+    .render-grid>div:last-child .bullets{display:grid!important;grid-template-columns:1fr 1fr!important;gap:1.2mm 6mm!important;margin-top:1.8mm!important}
+    .render-grid>div:last-child .bullets li{font-size:8.2pt!important;line-height:1.35!important;color:#222!important}
+
+    .sfml-shot img{width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important}
+    .window-frame img,.video-box>img{width:100%!important;height:auto!important;object-fit:contain!important}
+    .wind-brand img{width:12mm!important;height:12mm!important;object-fit:contain!important}
+    .cpp-grid .tool img{height:auto!important;width:100%!important;object-fit:cover!important}
+    .cpp-grid{break-inside:auto!important}
+    .cpp-grid .tool{break-inside:avoid!important}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#work">Skip to work</a>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="Oleksii Fetsenets, home">
+      <span class="brand-mark">AF</span>
+      <span>Oleksii Fetsenets</span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#work">Work</a>
+      <a href="#cpp">C++ / SFML</a>
+      <a href="#ai">AI &amp; workflow</a>
+      <a href="#range">Toolbox</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="nav-cta" href="https://github.com/OleksiiFetsenets" target="_blank" rel="noopener">
+      GitHub <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="pdf-head" aria-hidden="true">
+        <div>
+          <div class="pdf-name">Oleksii Fetsenets</div>
+          <div class="pdf-role">Software engineer · Unity gameplay, mobile &amp; native clients · AI-native workflow</div>
+        </div>
+        <div class="pdf-contact">
+          <span>oleksiifetsenets@gmail.com</span>
+          <span>github.com/OleksiiFetsenets</span>
+          <span>Bat Yam, Israel</span>
+        </div>
+      </div>
+      <div class="eyebrow"><span class="pulse-dot"></span> Unity gameplay · mobile · AI-native workflow</div>
+      <h1>Games that hold up.<br><span class="grad">Workflows that move faster.</span></h1>
+      <p class="lede">
+        I&rsquo;m Oleksii — a computer science graduate from Tel-Hai and software engineer at Red Software, where I work on
+        <strong>Wind</strong>, a terminal built for supervising AI coding agents. I build game loops with
+        real economies, tested core logic and device builds — and I put AI to work across the whole process.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#work">See the work <span aria-hidden="true">↓</span></a>
+        <a class="btn btn-ghost" href="https://github.com/OleksiiFetsenets" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .7A11.3 11.3 0 0 0 .7 12c0 5 3.2 9.2 7.7 10.7.6.1.8-.2.8-.5v-2c-3.1.7-3.8-1.3-3.8-1.3-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 1.7 2.6 1.2 3.2.9.1-.7.4-1.2.7-1.5-2.5-.3-5.1-1.2-5.1-5.5 0-1.2.4-2.2 1.1-3-.1-.3-.5-1.4.1-2.9 0 0 1-.3 3.1 1.2a10.7 10.7 0 0 1 5.6 0c2.1-1.5 3.1-1.2 3.1-1.2.6 1.5.2 2.6.1 2.9.7.8 1.1 1.8 1.1 3 0 4.3-2.6 5.2-5.1 5.5.4.3.8 1 .8 2.1v3.1c0 .3.2.6.8.5A11.3 11.3 0 0 0 23.3 12 11.3 11.3 0 0 0 12 .7Z"/></svg>
+          GitHub
+        </a>
+        <a class="btn btn-ghost" href="mailto:oleksiifetsenets@gmail.com">Email me</a>
+        <a class="btn btn-ghost" href="Oleksii-Fetsenets-Portfolio-MoonActive.pdf" download>PDF</a>
+      </div>
+      <ul class="stats">
+        <li><b>6</b><span>playable builds — Unity, Android, macOS, SFML</span></li>
+        <li><b>13</b><span>EditMode tests + a 200k-spin RTP simulation</span></li>
+        <li><b>11/11</b><span>automated UI checks across four resolutions</span></li>
+        <li><b>14</b><span>PRs delivered to a production Go monorepo</span></li>
+      </ul>
+      <p class="fit-note">
+        <span class="coin" aria-hidden="true"></span>
+        <span><strong style="color:var(--text)">Prepared for Moon Active</strong> — Unity Developer, <em>Coin Master Board Adventure</em>. The first project below is a Coin Master-style spin-and-raid loop built from scratch in Unity 6.</span>
+      </p>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">Selected work</div>
+          <h2>Playable builds, not mockups.</h2>
+        </div>
+        <p>Four complete builds: a Coin Master-style economy, a duel with a self-written neural network, a GPU-rendered fractal, and a polished mobile app.</p>
+      </div>
+
+      <!-- ================= COINFALL ================= -->
+      <article class="project reveal" aria-labelledby="coinfall-title">
+        <div class="project-top">
+          <div class="project-copy">
+            <span class="badge">Featured · Unity 6</span>
+            <div class="tags">
+              <span class="tag">Unity 6000.2.10f1</span>
+              <span class="tag">C#</span>
+              <span class="tag">uGUI + shaders</span>
+              <span class="tag">Solo project</span>
+            </div>
+            <h3 id="coinfall-title">Coinfall — a Coin Master loop,<br><em>rebuilt from first principles.</em></h3>
+            <p class="project-sub">Solo vertical slice · macOS + Android builds · Doom-flavoured</p>
+            <p class="project-desc">
+              Spin for coins, raid rival bases, upgrade the village, unlock the next island.
+              A full core loop with the economy, persistence, UI and device builds around it.
+            </p>
+            <ul class="bullets">
+              <li><strong>Slot core:</strong> 3×3 reels, five paylines, weighted symbols and a triple-BFG jackpot.</li>
+              <li><strong>Meta loop:</strong> energy regen and refills, four upgradable buildings with payout multipliers, shield-based raids on bot rivals.</li>
+              <li><strong>Architecture:</strong> pure C# core with <span class="mono">noEngineReferences</span>, Unity views and adapters, an <span class="mono">IStore</span> port for save/load.</li>
+              <li><strong>Proof, not vibes:</strong> 13 EditMode tests, a 200,000-spin RTP simulation (~0.99), and an automated UI walkthrough that drives the real buttons.</li>
+              <li><strong>Layout audit:</strong> 11/11 behavioural checks and 0 overlap/off-screen problems at 1280×720, 1024×768, 900×500 and 500×900.</li>
+            </ul>
+            <div class="project-links">
+              <a class="textlink" href="#contact">Ask for a live walkthrough <span aria-hidden="true">↗</span></a>
+              <span class="mono" style="font-size:11.5px;color:var(--dim)">source available on request</span>
+            </div>
+            <p class="note" style="margin-top:14px">
+              Doom-themed mechanics study. All art is from Freedoom (BSD-3-Clause); mechanics are inspired by
+              Coin Master, but no Coin Master art, names or characters are used.
+            </p>
+          </div>
+          <div class="project-media">
+            <button class="keyvisual" type="button" data-full="assets/coinfall-village.png" data-caption="Coinfall — village screen, four upgradable buildings" aria-label="Open full-size Coinfall village screenshot">
+              <img src="assets/coinfall-village.png" alt="Coinfall village screen with four upgradable buildings, coins and spin button">
+              <span class="caption-chip">Coinfall · 1280×720</span>
+            </button>
+          </div>
+        </div>
+        <dl class="specs">
+          <div><dt>Engine</dt><dd>Unity 6 (6000.2.10f1), C#</dd></div>
+          <div><dt>Platforms</dt><dd>macOS app + Android APK</dd></div>
+          <div><dt>Code</dt><dd>~2.7K lines of C#</dd></div>
+          <div><dt>Tests</dt><dd>13 EditMode + RTP simulation</dd></div>
+          <div><dt>Automation</dt><dd><span class="mono">-autoshot</span> + <span class="mono">UICHECK</span> audit</dd></div>
+          <div><dt>Status</dt><dd>Vertical slice, built and playable</dd></div>
+        </dl>
+        <div class="gallery">
+          <button class="shot span4" data-full="assets/coinfall-spin.png" data-caption="Coinfall — spin in motion">
+            <img src="assets/coinfall-spin.png" alt="Coinfall slot machine mid-spin">
+            <span>Spin in motion — weighted reels, five paylines</span>
+          </button>
+          <button class="shot span2" data-full="assets/coinfall-raid.png" data-caption="Coinfall — raid screen with shields and battle log">
+            <img src="assets/coinfall-raid.png" alt="Coinfall raid screen showing rival shield and attack options">
+            <span>Raid a rival — shields and stolen coins</span>
+          </button>
+          <button class="shot span3" data-full="assets/coinfall-idle.png" data-caption="Coinfall — idle state">
+            <img src="assets/coinfall-idle.png" alt="Coinfall idle main screen">
+            <span>Idle state — energy, coins, spin</span>
+          </button>
+          <button class="shot span3 portrait" data-full="assets/coinfall-portrait.png" data-caption="Coinfall — portrait layout at 500×900">
+            <img src="assets/coinfall-portrait.png" alt="Coinfall portrait layout at 500 by 900">
+            <span>Portrait 500×900 — layout audit passed</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- ================= HOLYWAR ================= -->
+      <article class="project reveal pad-lg" aria-labelledby="holywar-title">
+        <div class="split">
+          <div>
+            <span class="badge violet">Game AI · Android</span>
+            <div class="tags">
+              <span class="tag">Java</span>
+              <span class="tag">Android</span>
+              <span class="tag">No engine</span>
+              <span class="tag">~5K lines</span>
+            </div>
+            <h3 id="holywar-title" style="margin-top:14px">HOLYWAR — a duel where<br><em style="font-style:normal;color:var(--gold-2)">the enemy learns you.</em></h3>
+            <p class="project-sub">First-person medieval duel · hand-drawn sprite animation</p>
+            <p class="project-desc">
+              A knight duel on Android, drawn and animated frame by frame, with a small neural network
+              behind the knight&rsquo;s shield. No game engine. No animation library. No ML library.
+            </p>
+            <ul class="bullets">
+              <li><strong>Sprite pipeline:</strong> a custom Python packer trims, deduplicates and atlases every frame; the sheets take 43% less space and animations live in JSON.</li>
+              <li><strong>Combat feel:</strong> layered sprites, hits land on exact animation frames, and a guard-stamina loop creates the openings you have to read.</li>
+              <li><strong>Learning enemy:</strong> an 18 → 16 → 4 MLP written from scratch — matrix math, forward pass and backprop — that updates from how you react after each decision.</li>
+              <li><strong>Real training:</strong> the diagram is drawn from saved weights after 211 samples across 30 battles; the strongest inputs are the knight&rsquo;s own guard attempts.</li>
+            </ul>
+            <div class="project-links">
+              <a class="textlink" href="#contact">Source walkthrough on request <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+          <div class="media-stack">
+            <div class="phone-frame">
+              <div class="screen video-box portrait-video">
+                <img src="assets/holywar-poster.png" alt="HOLYWAR gameplay: knight blocks, strikes and defeats the enemy">
+                <video src="assets/holywar-gameplay.mp4" poster="assets/holywar-poster.png" autoplay muted loop playsinline aria-label="HOLYWAR gameplay: knight blocks, strikes and defeats the enemy"></video>
+              </div>
+            </div>
+            <div class="media-caption">gameplay · block, strike, punish the opening</div>
+          </div>
+        </div>
+        <div class="brain-card" style="margin-top:28px">
+          <img src="assets/holywar-brain.svg" alt="Diagram of HOLYWAR's neural network: 18 inputs, 16 hidden neurons, 4 outputs, drawn from learned weights">
+          <p>The real network, drawn from a saved brain after 30 battles. Every connection is a learned weight — blue positive, red negative, thickness is strength.</p>
+        </div>
+        <div class="atlas-strip">
+          <figure>
+            <img src="assets/holywar-atlas.png" alt="HOLYWAR combat sprite atlas with sword swings, shield frames and blood">
+            <figcaption>combat atlas — trimmed, deduplicated, packed</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/holywar-phone.png" alt="HOLYWAR knight standing in the arena" style="object-fit:contain;background:#0a0b0e">
+            <figcaption>the knight — every frame hand-drawn</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <!-- ================= FRACTAL ================= -->
+      <article class="project reveal pad-md" aria-labelledby="fractal-title">
+        <div style="padding:16px 16px 26px">
+          <div class="section-head" style="margin-bottom:16px;align-items:center">
+            <div>
+              <span class="badge">Graphics · Unity 6 + HLSL</span>
+              <div class="tags" style="margin-bottom:0">
+                <span class="tag">Compute shaders</span>
+                <span class="tag">GPU ray marching</span>
+                <span class="tag">~13K LOC</span>
+              </div>
+              <h3 id="fractal-title" style="margin-top:16px;font-size:clamp(30px,3.8vw,48px)">Real-time Mandelbulb —<br><em style="font-style:normal;color:var(--gold-2)">rendered on the GPU.</em></h3>
+            </div>
+            <p style="margin:0;max-width:380px;color:var(--muted);font-size:14.5px">
+              Final project at Tel-Hai, with Navot Sagi. Advisor: Dr. Shlomo Houri.
+              <a href="https://github.com/OleksiiFetsenets/UnityFractalRenderer" target="_blank" rel="noopener" style="color:var(--gold-2);text-decoration:none;border-bottom:1px solid rgba(255,217,138,.3)">Source on GitHub ↗</a>
+            </p>
+          </div>
+        </div>
+        <figure class="render-hero" data-full="assets/fractal-mandelbulb.jpg" data-caption="Unity 6 compute-shader Mandelbulb with distance-estimated ray marching" style="margin:0" tabindex="0" role="button" aria-label="Open full-size Mandelbulb render">
+          <img src="assets/fractal-mandelbulb.jpg" alt="Real-time Mandelbulb fractal rendered with a Unity compute shader">
+          <div class="render-overlay">
+            <div>
+              <h3 style="margin:0;font-size:clamp(26px,3.4vw,42px)">Full-screen GPU rendering,<br>one pixel at a time.</h3>
+              <p>Inverse-projection camera rays → signed-distance Mandelbulb → iterative ray marching → numerical normals and directional lighting.</p>
+            </div>
+            <div class="render-meta">Unity 6 · HLSL compute<br>free-flight camera</div>
+          </div>
+        </figure>
+        <div class="render-grid">
+          <figure data-full="assets/fractal-sierpinski.jpg" data-caption="Sierpinski fractal from the same renderer" tabindex="0" role="button" aria-label="Open full-size Sierpinski render">
+            <img src="assets/fractal-sierpinski.jpg" alt="Sierpinski tetrahedron fractal render">
+            <figcaption>Sierpinski — earlier ray-marching experiment, kept alongside the final renderer</figcaption>
+          </figure>
+          <div style="border:1px solid var(--line);border-radius:16px;background:#111318;padding:20px">
+            <div class="kicker" style="font-size:10.5px">What it exercises</div>
+            <ul class="bullets" style="margin-top:14px;gap:9px">
+              <li>Compute shaders + writable render textures</li>
+              <li>Camera-ray reconstruction from inverse projection</li>
+              <li>Distance estimation and step limits</li>
+              <li>Numerical normals and lighting</li>
+              <li>Smooth six-axis free-flight controls</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= KUSAKU ================= -->
+      <article class="project reveal pad-lg" aria-labelledby="kusaku-title">
+        <div class="split" style="align-items:center">
+          <div>
+            <span class="badge">Mobile product · Kotlin</span>
+            <div class="tags">
+              <span class="tag">Kotlin</span>
+              <span class="tag">Jetpack Compose</span>
+              <span class="tag">~6.9K LOC</span>
+              <span class="tag">iOS port in progress</span>
+            </div>
+            <h3 id="kusaku-title" style="margin-top:14px">Kusaku — a Sudoku app<br><em style="font-style:normal;color:var(--gold-2)">with a personality.</em></h3>
+            <p class="project-sub">Android · five difficulties · four themes · APK built</p>
+            <p class="project-desc">
+              A complete Sudoku product: pencil marks, undo, hints, timer and autosave — plus a
+              cyberpunk theme that is a live Canvas, not a skin.
+            </p>
+            <ul class="bullets">
+              <li><strong>Product depth:</strong> five difficulty levels, same-digit highlighting, per-cell 3×3 pencil marks, undo, hints, timer and autosave.</li>
+              <li><strong>Noob mode:</strong> refuses a wrong digit instead of punishing it, so the board can never enter a wrong state.</li>
+              <li><strong>Cyberpunk theme:</strong> animated parallax grid, drifting data streams, RGB-split title and tearing bursts — rendered from a single animated float and frozen when system animations are off.</li>
+              <li><strong>Beyond Android:</strong> iOS port in progress; unit tests cover the engine, generator and save format.</li>
+            </ul>
+          </div>
+          <div class="phone-row phones-2">
+            <div>
+              <div class="phone-frame"><div class="screen"><img src="assets/kusaku-light.png" alt="Kusaku Sudoku board in light theme"></div></div>
+              <div class="media-caption">light · notes · 393×852</div>
+            </div>
+            <div>
+              <div class="phone-frame"><div class="screen"><img src="assets/kusaku-cyber.png" alt="Kusaku Sudoku new game dialog in cyberpunk theme"></div></div>
+              <div class="media-caption">cyberpunk · new game</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= C++ / SFML ================= -->
+      <div class="section-head reveal" id="cpp" style="margin-top:70px">
+        <div>
+          <div class="kicker">C++ / SFML</div>
+          <h2>Games and graphics,<br>from the metal up.</h2>
+        </div>
+        <p>SFML games, a typewriter simulator, and low-level C++ that owns its pixels, memory and audio buffers.</p>
+      </div>
+
+      <article class="project reveal pad-lg" aria-labelledby="farmer-title">
+        <div class="split" style="align-items:center">
+          <div>
+            <span class="badge">SFML game · C++17</span>
+            <div class="tags">
+              <span class="tag">SFML 2.6</span>
+              <span class="tag">Tile map</span>
+              <span class="tag">Sprite animation</span>
+              <span class="tag">~420 lines</span>
+            </div>
+            <h3 id="farmer-title" style="margin-top:14px">WalkingFarmer —<br><em style="font-style:normal;color:var(--gold-2)">a small world that reacts.</em></h3>
+            <p class="project-sub">800×608 SFML window · 32px tile map · day/night cycle</p>
+            <p class="project-desc">
+              A tile-based farming sandbox: walk around, dig or plant grass, and watch the ground
+              redraw itself with the right edge and corner tiles.
+            </p>
+            <ul class="bullets">
+              <li><strong>Movement:</strong> animated four-direction farmer sprite, normalized diagonal speed and delta-time updates.</li>
+              <li><strong>Terrain:</strong> 32px tiles, grass/earth/stone atlases, and a flood-fill neighbour pass that picks matching edges and corners after every dig.</li>
+              <li><strong>Depth and collision:</strong> tree split into behind/front layers, border clamping and a collision rectangle around the trunk.</li>
+              <li><strong>Atmosphere:</strong> an 80-second day/night alpha overlay computed from a sine curve.</li>
+            </ul>
+            <div class="project-links">
+              <a class="textlink" href="#contact">Source walkthrough on request <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+          <figure class="sfml-shot">
+            <img src="assets/walking-farmer.png" alt="WalkingFarmer SFML game: farmer in a tiled field beside a tree">
+            <figcaption>WalkingFarmer · 800×608 · rendered from the SFML build</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <article class="project reveal pad-lg" aria-labelledby="typewriter-title">
+        <div class="split" style="align-items:center">
+          <div class="media-stack">
+            <div class="window-frame video-box tw-video">
+              <img src="assets/typewriter-poster.png" alt="TypeWriter demo: typing, carriage movement and sounds">
+              <video src="assets/typewriter-demo.mp4" poster="assets/typewriter-poster.png" autoplay muted loop playsinline aria-label="TypeWriter demo: typing, carriage movement and sounds"></video>
+            </div>
+            <div class="media-caption">TypeWriter · 816×480 · SFML 2.6</div>
+          </div>
+          <div>
+            <span class="badge">Desktop app · C++17</span>
+            <div class="tags">
+              <span class="tag">SFML 2.6</span>
+              <span class="tag">Audio</span>
+              <span class="tag">Image export</span>
+              <span class="tag">~410 lines</span>
+            </div>
+            <h3 id="typewriter-title" style="margin-top:14px">TypeWriter —<br><em style="font-style:normal;color:var(--gold-2)">the feel of paper.</em></h3>
+            <p class="project-sub">Typewriter simulator · keybell, carriage and margin sounds</p>
+            <p class="project-desc">
+              A small desktop typewriter that treats text entry as a physical machine: a carriage
+              that moves, a line that advances, and a page you can save as an image.
+            </p>
+            <ul class="bullets">
+              <li><strong>Machine feel:</strong> per-key typing, carriage left/right, line advance, tab-to-margin and a constrained page area.</li>
+              <li><strong>Sound design:</strong> key, return and margin-bell effects, with mute control.</li>
+              <li><strong>Output:</strong> clear, mute and export the finished page to a PNG under <span class="mono">resources/saved_pages/</span>.</li>
+              <li><strong>Shipped source:</strong> CMake project, C++17, SFML 2.5+ and a README with build steps.</li>
+            </ul>
+            <div class="project-links">
+              <a class="textlink" href="https://github.com/OleksiiFetsenets/TypeWriter" target="_blank" rel="noopener">Source on GitHub <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <div class="tool-grid cpp-grid">
+        <div class="tool reveal">
+          <div class="tool-head">
+            <h4>SoundVisualiser</h4>
+            <span class="lang">C++20 · Cocoa · Core Audio</span>
+          </div>
+          <p>Not SFML — the layer below it. A <b>handmade-style software renderer</b> and audio path: custom arena allocator, lock-free ring buffer, Cocoa window and direct Core Audio HAL output.</p>
+          <p style="margin-top:8px">Draws the live 65,536-slot ring buffer as a circle, the newest 2,048 samples as a waveform, and 64 log-spaced spectrum bars. ~2K lines, with tests for the allocator, ring buffer and drawing core.</p>
+        </div>
+        <a class="tool reveal" href="https://github.com/OleksiiFetsenets/ArenaAllocator" target="_blank" rel="noopener" style="text-decoration:none">
+          <img src="assets/arena-bitmap.jpg" alt="Arena allocator software-rendered bitmap demo: gradient and center square">
+          <div class="tool-head">
+            <h4>Arena Allocator</h4>
+            <span class="lang">C++20 · POSIX mmap</span>
+          </div>
+          <p>Page-aligned bump allocator with placement new, move-only ownership and O(1) bulk reset — used as the backing store for a native software-rendered bitmap. Source on GitHub ↗</p>
+        </a>
+        <div class="tool reveal">
+          <div class="tool-head">
+            <h4>SFML prototype</h4>
+            <span class="lang">C++ · 2024</span>
+          </div>
+          <p>An early 700×700 player/food game: custom <span class="mono">sf::Drawable</span> classes, a fixed-timestep loop, delta-time movement, collision and growth. Where the SFML work started.</p>
+        </div>
+        <div class="tool reveal">
+          <div class="tool-head">
+            <h4>SFML Blueprints study</h4>
+            <span class="lang">Asteroids · Tetris</span>
+          </div>
+          <p>Asteroids and Tetris builds followed while learning SFML — entity/collision structure, game states and input. Study code, not presented as original game design.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= AI ================= -->
+  <section class="ai-section" id="ai">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">AI as a force multiplier</div>
+          <h2>Not bolted on. Built in.</h2>
+        </div>
+        <p>I use agents to explore, test and document — then verify the artifact myself. And I build products that put AI in the user&rsquo;s hands.</p>
+      </div>
+
+      <div class="wind-card reveal">
+        <div class="wind-inner">
+          <div>
+            <div class="wind-brand">
+              <img src="assets/wind.png" alt="Wind logo" width="58" height="58">
+              <div>
+                <b>Wind by Repora</b>
+                <span>Software Engineer, Red Software · 2026 · <a href="https://wind.repora.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(212,201,255,.45)">wind.repora.com ↗</a></span>
+              </div>
+            </div>
+            <h3>The terminal that follows you —<br>built for AI agents.</h3>
+
+            <p class="wind-what">
+              <span class="wind-what-label">What it is</span>
+              A terminal app for developers who work with AI coding agents. Terminals normally die with the
+              window: close the laptop lid or lose Wi‑Fi and the build, the server and the agent session go with it.
+              Wind keeps every terminal running on the host machine, then lets the same session be opened from a
+              desktop window or a phone. The Chat view reads the agent's output and turns its questions —
+              <em>“may I run this command?”</em> — into buttons you can answer from anywhere.
+            </p>
+
+            <div class="wind-role" aria-label="My responsibility on Wind">
+              <div class="wind-role-head">
+                <span class="wind-role-label">My area</span>
+                <b>Native clients — iOS &amp; macOS</b>
+              </div>
+              <div class="wind-role-grid">
+                <div>
+                  <span class="mono">iOS · SwiftUI + UIKit</span>
+                  <p>Library/Live/History views, device and terminal switcher, QR pairing and camera scan, approval prompts, Chat view, terminal surface and input, reconnect handling, SSH + Keychain, in-app purchases. <em>In development — not yet on the App Store.</em></p>
+                </div>
+                <div>
+                  <span class="mono">macOS · desktop app</span>
+                  <p>Native OS probes for busy status, foreground program and interrupt; Dock-click activation; relay preference without a daemon restart; stop-confirmation; Devices page with website preview.</p>
+                </div>
+              </div>
+              <p class="wind-role-foot">Backed by the shared Go monorepo — relay, daemon and port forwarding work lives there too.</p>
+            </div>
+
+            <ul class="bullets">
+              <li><strong>Port forwarding, end to end:</strong> <span class="mono">wind forward</span> over the authenticated device stream — owner allowlist with default deny, warm stream pool, limits, timeouts and a revocation test.</li>
+              <li><strong>Website preview over the relay:</strong> desktop Devices page, iOS and Android — verified on a physical iPhone over cellular and in Chrome.</li>
+              <li><strong>Cross-platform delivery:</strong> 14 PRs to a ~340K-line Go monorepo, working directly with the senior team.</li>
+            </ul>
+            <div class="project-links wind-links">
+              <a class="textlink" href="https://wind.repora.com" target="_blank" rel="noopener">Wind by Repora <span aria-hidden="true">↗</span></a>
+              <a class="textlink" href="https://play.google.com/store/apps/details?id=com.repora.wind" target="_blank" rel="noopener">Android app on Google Play <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+          <div class="flow-box" aria-label="How Wind connects a phone to an AI agent running on a host">
+            <div class="flow-label">One paired device, many machines</div>
+            <div class="flow-row">
+              <div class="flow-node"><b>iPhone / Android</b><small>iOS app · SwiftUI</small></div>
+              <span class="flow-arrow" aria-hidden="true">→</span>
+              <div class="flow-node"><b>Relay</b><small>any network, no VPN</small></div>
+            </div>
+            <div class="flow-row">
+              <div class="flow-node"><b>macOS / Windows</b><small>desktop app</small></div>
+              <span class="flow-arrow" aria-hidden="true">↔</span>
+              <div class="flow-node"><b>windd host</b><small>keeps terminals alive</small></div>
+            </div>
+            <div class="flow-row">
+              <div class="flow-node"><b>AI agent</b><small>Claude Code / Codex</small></div>
+              <span class="flow-arrow" aria-hidden="true">→</span>
+              <div class="flow-node"><b>Ask → answer</b><small>from any device</small></div>
+            </div>
+            <div class="agent-chip"><span class="live" aria-hidden="true"></span><span><code>agent:</code> “may I run this command?” — approve from the phone.</span></div>
+            <div class="flow-label" style="margin-top:2px">Sessions survive restarts · headless servers · no plugin installed into the agent</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-grid">
+        <div class="tool reveal">
+          <div class="tool-head">
+            <h4>AI Prompt Evaluation Lab</h4>
+            <span class="lang">SwiftUI · Ollama</span>
+          </div>
+          <p>A macOS app that turns <b>186 Google Maps reviews</b> into structured business insight: local LLM classification, JSON-schema validation, CSV review browser and a generated report.</p>
+        </div>
+        <div class="tool reveal">
+          <div class="tool-head">
+            <h4>LinkedIn Tool</h4>
+            <span class="lang">SwiftUI · Qwen 2.5 7B</span>
+          </div>
+          <p>Job scanner running a <b>local Ollama model</b> with JSON-schema-validated output. Refactored to modular MVVM; ~8K lines, fully offline.</p>
+        </div>
+        <div class="tool reveal">
+          <div class="tool-head">
+            <h4>Local Browser Debugger</h4>
+            <span class="lang">Chrome · Ollama</span>
+          </div>
+          <p>A side-panel extension that sends console and network errors to a <b>local model</b> and explains them in place. No data leaves the machine.</p>
+        </div>
+        <div class="tool reveal">
+          <div class="tool-head">
+            <h4>Gless</h4>
+            <span class="lang">Swift · MLX</span>
+          </div>
+          <p>An iPad chat app running an <b>LLM on device</b> with MLX — no server, no API key. Builds for iPad on Apple silicon.</p>
+        </div>
+      </div>
+
+      <div class="workflow reveal">
+        <div class="workflow-head">
+          <div>
+            <div class="kicker" style="font-size:10.5px">How a feature ships</div>
+            <h4>Agents for breadth. Tests for truth.</h4>
+          </div>
+          <p style="margin:0;max-width:360px;color:var(--muted);font-size:13.5px">The workflow I used on Coinfall, and the one I use daily on Wind.</p>
+        </div>
+        <div class="workflow-grid">
+          <div class="step">
+            <div class="num">01</div>
+            <b>Pure core first</b>
+            <p>Game math as deterministic C# with no engine references. Seeded logic, unit tests, a simulated economy.</p>
+          </div>
+          <div class="step">
+            <div class="num">02</div>
+            <b>Agents for the edges</b>
+            <p>Claude Code and Codex for scaffolding, refactors and test ideas. Every change reviewed against the real code.</p>
+          </div>
+          <div class="step">
+            <div class="num">03</div>
+            <b>Drive the real build</b>
+            <p>The game runs an automated UI walkthrough: it clicks real buttons, screenshots each state and audits layout.</p>
+          </div>
+          <div class="step">
+            <div class="num">04</div>
+            <b>Verify the artifact</b>
+            <p>Device build, real screenshots, RTP simulation. A green test is not a feature — the build is the claim.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RANGE ================= -->
+  <section id="range">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">Also in the toolbox</div>
+          <h2>Comfortable below the game layer.</h2>
+        </div>
+        <p>C#, C++, Go, Kotlin, Swift and Python — the systems work that makes gameplay cheaper, faster and easier to debug.</p>
+      </div>
+      <div class="range-grid">
+        <a class="range-card reveal" href="https://github.com/OleksiiFetsenets/TelHai.DotNet.PlayerProject" target="_blank" rel="noopener">
+          <div class="rc-top"><b>C# / WPF music player</b><span class="arrow">↗</span></div>
+          <p>iTunes search, playback, playlists and a song editor. MVVM with services, view models and relay commands.</p>
+        </a>
+        <a class="range-card reveal" href="https://github.com/OleksiiFetsenets/ArenaAllocator" target="_blank" rel="noopener">
+          <div class="rc-top"><b>C++20 arena allocator</b><span class="arrow">↗</span></div>
+          <p>mmap-backed, page-aligned, move-only with O(1) bulk reset — plus a native software-rendering demo.</p>
+        </a>
+        <a class="range-card reveal" href="https://github.com/OleksiiFetsenets/blackjack-lan-multiplayer" target="_blank" rel="noopener">
+          <div class="rc-top"><b>Blackjack LAN</b><span class="arrow">↗</span></div>
+          <p>Host-authoritative 2–4 player netcode: UDP discovery, framed TCP/JSON, reconnects and Dockerized tests.</p>
+        </a>
+        <div class="range-card reveal">
+          <div class="rc-top"><b>FFmpeg transcoder</b><span class="arrow" style="color:var(--gold)">◆</span></div>
+          <p>ABR ladder from one input to HLS/DASH, with HDR→SDR tone mapping. C++ and FFmpeg libraries.</p>
+        </div>
+      </div>
+      <p class="note reveal" style="margin-top:22px">
+        B.Sc. Computer Science, Tel-Hai Academic College — graduated 2026. Coursework in operating systems, architecture,
+        networks, algorithms, compilers and mobile development.
+      </p>
+      <div class="gh-links reveal">
+        <span>More on GitHub</span>
+        <a href="https://github.com/OleksiiFetsenets/Pokemon_project_final_web" target="_blank" rel="noopener">Pokémon battle platform ↗</a>
+        <a href="https://github.com/OleksiiFetsenets/Fractal" target="_blank" rel="noopener">fractal final project ↗</a>
+        <a href="https://github.com/OleksiiFetsenets" target="_blank" rel="noopener">all repositories ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section class="contact" id="contact">
+    <div class="wrap contact-inner">
+      <div class="kicker reveal">Let&rsquo;s talk</div>
+      <h2 class="reveal">The Coin Master role<br><span>sounds like my kind of loop.</span></h2>
+      <p class="reveal">
+        I&rsquo;d be glad to have the short, no-obligation conversation Maya suggested — and to walk through
+        Coinfall&rsquo;s economy, the HOLYWAR learning agent, or Wind&rsquo;s AI-agent workflow live.
+      </p>
+      <div class="contact-links reveal">
+        <a class="btn btn-primary" href="mailto:oleksiifetsenets@gmail.com">oleksiifetsenets@gmail.com</a>
+        <a class="btn btn-ghost" href="https://github.com/OleksiiFetsenets" target="_blank" rel="noopener">github.com/OleksiiFetsenets <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="contact-meta reveal">
+        <span><span class="dot"></span> Bat Yam, Israel</span>
+        <span><span class="dot"></span> Hebrew / English fluent</span>
+        <span><span class="dot"></span> Available for a conversation</span>
+      </div>
+    </div>
+    <footer>
+      <div class="wrap footer-inner">
+        <span>© 2026 Oleksii Fetsenets · built from real builds and real screenshots</span>
+        <span class="mono">Portfolio for Moon Active · Unity Developer</span>
+      </div>
+    </footer>
+  </section>
+</main>
+
+<!-- lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot viewer">
+  <div class="lb-shell">
+    <div class="lb-bar">
+      <div class="lb-caption" id="lb-caption"></div>
+      <div class="lb-actions">
+        <button class="lb-nav" id="lb-prev" type="button" aria-label="Previous screenshot">←</button>
+        <button class="lb-nav" id="lb-next" type="button" aria-label="Next screenshot">→</button>
+        <button class="lb-close" id="lb-close" type="button">Close ✕</button>
+      </div>
+    </div>
+    <img class="lb-img" id="lb-img" alt="">
+  </div>
+</div>
+
+<script>
+(function(){
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  onScroll();
+  addEventListener('scroll', onScroll, {passive:true});
+
+  // reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }
+    }, {rootMargin: '0px 0px -8% 0px', threshold: 0.06});
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+
+  // lightbox
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const lbCap = document.getElementById('lb-caption');
+  const triggers = [...document.querySelectorAll('[data-full]')];
+  let index = 0;
+  let lastFocus = null;
+
+  function show(i){
+    if (!triggers.length) return;
+    index = (i + triggers.length) % triggers.length;
+    const el = triggers[index];
+    lbImg.src = el.dataset.full;
+    lbImg.alt = el.dataset.caption || el.querySelector('img')?.alt || '';
+    lbCap.textContent = el.dataset.caption || '';
+    lb.classList.add('open');
+    document.body.classList.add('lb-open');
+    document.getElementById('lb-close').focus();
+  }
+  function close(){
+    lb.classList.remove('open');
+    document.body.classList.remove('lb-open');
+    lbImg.removeAttribute('src');
+    if (lastFocus) lastFocus.focus();
+  }
+
+  triggers.forEach((el, i) => {
+    el.addEventListener('click', () => { lastFocus = el; show(i); });
+    if (el.tagName !== 'BUTTON') {
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); lastFocus = el; show(i); }
+      });
+    }
+  });
+
+  document.getElementById('lb-close').addEventListener('click', close);
+  document.getElementById('lb-prev').addEventListener('click', () => show(index - 1));
+  document.getElementById('lb-next').addEventListener('click', () => show(index + 1));
+  lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+  addEventListener('keydown', (e) => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(index - 1);
+    if (e.key === 'ArrowRight') show(index + 1);
+  });
+})();
+</script>
+</body>
+</html>
